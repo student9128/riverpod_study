@@ -1,17 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod_study/home.dart';
+import 'package:riverpod_study/log.dart';
+import 'package:riverpod_study/me.dart';
+import 'package:riverpod_study/me/theme_controller.dart';
 import 'package:riverpod_study/practice.dart';
+import 'package:riverpod_study/ui/themes.dart';
 part 'main.g.dart';
 @riverpod
 String helloWorld(HelloWorldRef ref) {
   return 'Hello world';
 }
-void main() {
-  runApp(ProviderScope(child: MaterialApp(
-    theme: ThemeData(useMaterial3: true),
-    home: const MyHomePage(),)));
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+final dir = await getApplicationDocumentsDirectory();
+debugPrint("Hello,dir=$dir");
+Hive.init(dir.path);
+  runApp(ProviderScope(
+    observers: [ProvidersLogger()],
+      child:const TheApp() ));
+}
+
+class TheApp extends ConsumerWidget {
+  const TheApp({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String themeMode = ref.watch(asyncThemeNotifierProvider).value??lightMode;
+    final Color color= ref.watch(themeColorNotifierProvider);
+    debugPrint("themeMode===$themeMode");
+    return MaterialApp(
+      themeMode: themeMode==lightMode?ThemeMode.light:ThemeMode.dark,
+      theme: themeMode==lightMode?ThemeData(useMaterial3: true,colorScheme:ColorScheme.fromSeed(seedColor: color)):AppTheme.darkTheme,
+      home: const MyHomePage(),);
+  }
 }
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -19,7 +44,16 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final String value = ref.watch(helloWorldProvider);
-    return MaterialApp(home: Scaffold(appBar: AppBar(title: Text('data'),),body: Center(child: Text(value),),),);
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('data'),
+        ),
+        body: Center(
+          child: Text(value),
+        ),
+      ),
+    );
     return MaterialApp(home: Scaffold(appBar: AppBar(title: Text('data'),),body: Center(child: Text(value),),),);
   }
 
@@ -131,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return Scaffold(
         body: PageView(
           controller: _pageController,
-          children: [HomePage(), PracticePage()],
+          children: const [HomePage(), PracticePage(),MePage()],
           onPageChanged: (index){
             ref.read(bottomTabStateProvider.notifier).setCurrentIndex(index);
           },
@@ -146,10 +180,12 @@ class _MyHomePageState extends State<MyHomePage> {
             unselectedItemColor:
                 Theme.of(context).colorScheme.onSurface, // 未选中项颜色
             backgroundColor: Theme.of(context).colorScheme.surface,
-            items: [
+            items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.spoke), label: 'Practice')
+                  icon: Icon(Icons.spoke), label: 'Practice'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.person), label: 'Me')
             ]),
       );
     });

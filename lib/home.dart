@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [Text('Provider'), Test1(), Test2(), Test3(),Test4(),BarChart(),Test6(),Container(
+          children: [Text('Provider'), Test1(), Test2(), Test3(),Test4(),BarChart(),Test6(),Test7(),Container(
             margin: EdgeInsets.only(top: 20),
             height: 200,
             child:Swiper(children: [ Container(
@@ -311,3 +311,43 @@ class _Test6State extends State<Test6> {
           ),);
   }
 }
+
+//*****************NotifierProvider**********************
+class ClickCount extends Notifier<int>{
+  @override
+  int build()=>0;
+  void increment(){
+    state++;
+  }
+}
+final clickCountProvider = NotifierProvider<ClickCount,int>(()=>ClickCount());
+
+//*****************riverpod**********************
+@riverpod
+class ClickCountX extends _$ClickCountX {
+  @override
+  int build()=>0;
+  void increment(){
+    state++;
+  }
+}
+
+class Test7 extends ConsumerWidget {
+  const Test7({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    var clickCount = ref.watch(clickCountProvider);
+    var clickCountX = ref.watch(clickCountXProvider);
+    return Row(children: [
+      ElevatedButton(onPressed:(){
+        ref.read(clickCountProvider.notifier).increment();
+        ref.read(clickCountXProvider.notifier).increment();
+
+      }, child:Text('increment'),),
+      SizedBox(width: 10,),
+      Text('$clickCount,${clickCountX}')
+    ],);
+  }
+}
+
