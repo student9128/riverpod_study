@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_study/me/theme_controller.dart';
 import 'package:riverpod_study/ui/themes.dart';
 
@@ -90,7 +91,11 @@ class _MePageState extends ConsumerState<MePage> {
                         color: ref.watch(themeColorNotifierProvider),
                       )
                     ],
-                  ))
+                  )),
+              ElevatedButton(onPressed: () async{
+               final request = await Permission.photos.request();
+               debugPrint("request===$request");
+              }, child:Text('申请相册权限'))
             ],
           ),
         ));
