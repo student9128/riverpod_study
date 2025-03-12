@@ -263,52 +263,57 @@ class _Test6State extends State<Test6> {
       _pageController.jumpToPage(1);
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    return Container(width: 300,height: 200,child: PageView(
-            controller: _pageController,
-            onPageChanged: (index){
-              _currentIndex.value = index == 0 ? 4 : (index == 5 ? 1 : index);
-            },
-            children: [
-              Container(
-                height: 200,
-                width: 300,
-                color: Colors.red,
-                child: Text('index=0,real=4,最后一个页面'),
-              ),
-              Container(
-                height: 200,
-                width: 300,
-                color: Colors.green,
-                child: Text('index=1'),
-              ),
-              Container(
-                height: 200,
-                width: 300,
-                color: Colors.amber,
-                child: Text('2'),
-              ),
-              Container(
-                height: 200,
-                width: 300,
-                color: Colors.pinkAccent,
-                child: Text('3'),
-              ),
-              Container(
-                height: 200,
-                width: 300,
-                color: Colors.red,
-                child: Text('4'),
-              ),
-              Container(
-                height: 200,
-                width: 300,
-                color: Colors.green,
-                child: Text('index=5 real=0,第一个页面'),
-              ),
-            ],
-          ),);
+    return Container(
+      width: 300,
+      height: 200,
+      child: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          _currentIndex.value = index == 0 ? 4 : (index == 5 ? 1 : index);
+        },
+        children: [
+          Container(
+            height: 200,
+            width: 300,
+            color: Colors.red,
+            child: Text('index=0,real=4,最后一个页面'),
+          ),
+          Container(
+            height: 200,
+            width: 300,
+            color: Colors.green,
+            child: Text('index=1'),
+          ),
+          Container(
+            height: 200,
+            width: 300,
+            color: Colors.amber,
+            child: Text('2'),
+          ),
+          Container(
+            height: 200,
+            width: 300,
+            color: Colors.pinkAccent,
+            child: Text('3'),
+          ),
+          Container(
+            height: 200,
+            width: 300,
+            color: Colors.red,
+            child: Text('4'),
+          ),
+          Container(
+            height: 200,
+            width: 300,
+            color: Colors.green,
+            child: Text('index=5 real=0,第一个页面'),
+          ),
+        ],
+      ),
+    );
   }
 }
 
